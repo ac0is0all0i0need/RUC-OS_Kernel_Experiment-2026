@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/ScheduleObserver/modules.order := {   echo /home/user/Kernel/share/os_kernal/ScheduleObserver/sched_observer.ko; :; } | awk '!x[$$0]++' - > /home/user/Kernel/share/os_kernal/ScheduleObserver/modules.order

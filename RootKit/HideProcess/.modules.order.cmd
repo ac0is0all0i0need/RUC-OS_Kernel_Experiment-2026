@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/RootKit/HideProcess/modules.order := {   echo /home/user/Kernel/share/os_kernal/RootKit/HideProcess/hide_process.ko; :; } | awk '!x[$$0]++' - > /home/user/Kernel/share/os_kernal/RootKit/HideProcess/modules.order

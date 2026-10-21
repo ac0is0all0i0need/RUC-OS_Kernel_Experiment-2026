@@ -34,7 +34,7 @@ static int observer_func(void *data) {
 // 模块初始化
 static int __init sched_observer_init(void) {
     int i;
-
+    int nice_vals[THREAD_NUM] = {-20, 19};
     printk(KERN_INFO "Initializing scheduler observer module...\n");
 
     // 初始化THREAD_NUM个线程
@@ -52,6 +52,9 @@ static int __init sched_observer_init(void) {
         wake_up_process(threads[i].task);
 
         // TODO: set thread priority
+        kthread_bind(threads[i].task, 0);  // 将线程绑定到同一个cpu
+        set_user_nice(threads[i].task, nice_vals[i]);
+        wake_up_process(threads[i].task);
     }
 
     return 0;

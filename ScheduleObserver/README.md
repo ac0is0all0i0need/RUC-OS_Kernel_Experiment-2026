@@ -22,7 +22,7 @@ mv RUC-OS_Kernel_Experiment-2026 practice_kern
 * 拷贝实验目录到客户机本地。
 
 ```bash
-cp -r /tmp/share/practice_kern/ScheduleObserver .
+cp -r /tmp/share/os_kernal/ScheduleObserver .
 cd ScheduleObserver
 ```
 
@@ -46,7 +46,7 @@ make
 * 启动qemu运行编译好的内核。
 
 ```bash
-./run v6.0 i386 buster
+./run.sh v6.0 i386 buster
 ```
 
 * 用户为user，无密码。
@@ -60,7 +60,7 @@ kernel login: user
 * 进入客户机的共享文件夹中的实验目录。
 
 ```bash
-cd /tmp/share/practice_kern/ScheduleObserver
+cd /tmp/share/os_kernal/ScheduleObserver
 ```
 
 * 加载内核模块sched_observer，让出内核线程CPU并记录调用次数。

@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/StudentList/modules.order := {   echo /home/user/Kernel/share/os_kernal/StudentList/student_list.ko; :; } | awk '!x[$$0]++' - > /home/user/Kernel/share/os_kernal/StudentList/modules.order

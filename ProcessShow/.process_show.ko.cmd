@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/ProcessShow/process_show.ko := ld -r -m elf_i386 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/user/Kernel/share/os_kernal/ProcessShow/process_show.ko /home/user/Kernel/share/os_kernal/ProcessShow/process_show.o /home/user/Kernel/share/os_kernal/ProcessShow/process_show.mod.o;  true

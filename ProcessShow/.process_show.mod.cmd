@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/ProcessShow/process_show.mod := printf '%s\n'   process_show.o | awk '!x[$$0]++ { print("/home/user/Kernel/share/os_kernal/ProcessShow/"$$0) }' > /home/user/Kernel/share/os_kernal/ProcessShow/process_show.mod

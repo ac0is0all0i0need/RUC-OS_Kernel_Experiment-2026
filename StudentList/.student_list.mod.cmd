@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/StudentList/student_list.mod := printf '%s\n'   student_list.o | awk '!x[$$0]++ { print("/home/user/Kernel/share/os_kernal/StudentList/"$$0) }' > /home/user/Kernel/share/os_kernal/StudentList/student_list.mod

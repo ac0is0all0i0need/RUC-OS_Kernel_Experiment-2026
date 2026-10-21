@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/RootKit/HideProcess/hide_process.ko := ld -r -m elf_i386 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/user/Kernel/share/os_kernal/RootKit/HideProcess/hide_process.ko /home/user/Kernel/share/os_kernal/RootKit/HideProcess/hide_process.o /home/user/Kernel/share/os_kernal/RootKit/HideProcess/hide_process.mod.o;  true

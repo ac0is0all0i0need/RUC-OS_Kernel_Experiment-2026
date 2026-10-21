@@ -34,6 +34,17 @@ static void print_processes(void) {
                get_task_state(task->__state),
                task->comm);
         // TODO: print more info
+        printk(KERN_INFO "EUID: %-6d | GID: %-6d | Parent PID: %-6d\n",
+               task->cred->euid.val,
+               task->cred->egid.val,
+               task->parent->pid);
+        // printk(KERN_INFO "Thread Info: flags=0x%lx, syscall_work=0x%lx, status=0x%x\n", 
+        //     task_thread_info(task)->flags, 
+        //     task_thread_info(task)->syscall_work, 
+        //     task_thread_info(task)->status);
+        #ifdef CONFIG_SMP
+        printk(KERN_INFO "CPU: %u\n", task_thread_info(task)->cpu);
+        #endif
     }
     rcu_read_unlock();
 }

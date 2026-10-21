@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/ScheduleObserver/Module.symvers := sed 's/ko$$/o/' /home/user/Kernel/share/os_kernal/ScheduleObserver/modules.order | scripts/mod/modpost    -o /home/user/Kernel/share/os_kernal/ScheduleObserver/Module.symvers -e    -w -T -

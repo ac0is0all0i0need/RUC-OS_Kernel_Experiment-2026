@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/ScheduleObserver/sched_observer.mod := printf '%s\n'   sched_observer.o | awk '!x[$$0]++ { print("/home/user/Kernel/share/os_kernal/ScheduleObserver/"$$0) }' > /home/user/Kernel/share/os_kernal/ScheduleObserver/sched_observer.mod

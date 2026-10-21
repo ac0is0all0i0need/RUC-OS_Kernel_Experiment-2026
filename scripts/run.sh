@@ -38,7 +38,7 @@ fi
 
 qemu-system-i386 \
     -snapshot \
-    -s \
+    -s -S\
     -m 4G \
     -smp 2 \
     -kernel ${KERNEL} \

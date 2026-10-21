@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/ScheduleObserver/sched_observer.ko := ld -r -m elf_i386 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/user/Kernel/share/os_kernal/ScheduleObserver/sched_observer.ko /home/user/Kernel/share/os_kernal/ScheduleObserver/sched_observer.o /home/user/Kernel/share/os_kernal/ScheduleObserver/sched_observer.mod.o;  true

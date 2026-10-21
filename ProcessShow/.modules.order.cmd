@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/ProcessShow/modules.order := {   echo /home/user/Kernel/share/os_kernal/ProcessShow/process_show.ko; :; } | awk '!x[$$0]++' - > /home/user/Kernel/share/os_kernal/ProcessShow/modules.order
