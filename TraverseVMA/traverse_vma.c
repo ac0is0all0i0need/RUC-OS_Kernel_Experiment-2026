@@ -17,7 +17,6 @@ static int __init traverse_all_vma_init(void)
 {
     struct task_struct *task;
     struct vm_area_struct *vma;
-    struct vma_iterator vmi;
 
     // 遍历系统中所有进程
     for_each_process(task) {
@@ -36,10 +35,8 @@ static int __init traverse_all_vma_init(void)
         // 加锁与迭代
         mmap_write_lock(mm);
 
-        vma_iter_init(&vmi, mm, 0);
-
         // 遍历所有 VMA，切换 VM_WRITE 位并打印差异
-        while ((vma = vma_next(&vmi)) != NULL) {
+        for (vma = mm->mmap; vma != NULL; vma = vma->vm_next) {
             unsigned long old_flags = vma->vm_flags;
             unsigned long new_flags; /* 仅用于打印/预期 */
 
@@ -50,7 +47,9 @@ static int __init traverse_all_vma_init(void)
                 continue;
 
             // TODO: flip vma's WRITE flag
-
+            unsigned long set_bits   = (~old_flags) & 0xfUL; // 当前为0、需要翻转为1的位
+            unsigned long clear_bits =   old_flags  & 0xfUL; // 当前为1、需要翻转为0的位
+            vm_flags_mod(vma, set_bits, clear_bits);
             new_flags = vma->vm_flags; /* 实际修改后的值 */
 
             pr_info("    flags before=0x%lx, after=0x%lx, diff=0x%lx\n",
