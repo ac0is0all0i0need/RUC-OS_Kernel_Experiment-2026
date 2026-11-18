@@ -1,116 +1,96 @@
-# MemoryStatus
-
-* 添加一个内核模块，遍历page打印物理内存信息，指定进程后遍历并打印vma和页表信息。
-
-## 操作指南
-
-* 拷贝编译好的内核模块原目录到客户机中：
-
-```bash
+MemoryStatus
+添加一个内核模块，遍历page打印物理内存信息，指定进程后遍历并打印vma和页表信息。
+操作指南
+拷贝编译好的内核模块原目录到客户机中：
 cp -r /tmp/share/practice_kern/MemoryStatus/ .
 cd MemoryStatus
-```
-
-* 编译并运行target用户态程序（target pid会输出）：
-
-```bash
+编译并运行target用户态程序（target pid会输出）：
 make target && ./target &
-```
-
-* 指定pid后运行内核模块：
-
-```bash
+指定pid后运行内核模块：
 make load PID=<target pid>
-```
-
-## 实验要求
-
-* 根据[export](../export.md)导出符号[__pte_offset_map](https://elixir.bootlin.com/linux/v6.6/source/mm/pgtable-generic.c#L280)。
-* 根据[mem_stat.c](./mem_stat.c)中的TODO完善代码，并按照如上流程执行后可以得到：
-
-```bash
-user@kernel:~/MemoryStatus$ make load PID=7928
-sudo insmod mem_stat.ko pid=7928
-[  199.109584][ T7937] mem_stat: loading out-of-tree module taints kernel.
-[  199.109898][ T7937] mem_stat: module verification failed: signature and/or required key missing - taintingl
-[  199.110459][ T7937] [memory_status] ===== Page Frame Traversal =====
-[  199.136519][ T7937] [memory_status] ===== Page Type Summary =====
-[  199.136858][ T7937] [memory_status] total_pfn         = 1310719
-[  199.137140][ T7937] [memory_status] valid_pfn         = 1048575
-[  199.137420][ T7937] [memory_status] free_pages        = 888
-[  199.137681][ T7937] [memory_status] anon_pages        = 12596
-[  199.137952][ T7937] [memory_status] file_pages        = 8873
-[  199.138220][ T7937] [memory_status] slab_pages        = 14483
-[  199.138491][ T7937] [memory_status] dirty_pages       = 937
-[  199.138753][ T7937] [memory_status] writeback_pages   = 0
-[  199.139007][ T7937] [memory_status] lru_pages         = 93311
-[  199.139279][ T7937] [memory_status] PAGE_SIZE         = 4096 bytes
-[  199.139574][ T7937] [memory_status] ===== Target process: bash (pid=7928) =====
-[  199.139919][ T7937] [memory_status] ===== Traverse VMA (Maple Tree) =====
-[  199.140241][ T7937] VMA: 0x555dcf831000 - 0x555dcf85e000, flags=0x8000071, anon=0, file=bash
-[  199.140621][ T7937] VMA: 0x555dcf85e000 - 0x555dcf90f000, flags=0x8000075, anon=0, file=bash
-[  199.141012][ T7937] VMA: 0x555dcf90f000 - 0x555dcf946000, flags=0x8000071, anon=0, file=bash
-[  199.141406][ T7937] VMA: 0x555dcf946000 - 0x555dcf94a000, flags=0x8100071, anon=0, file=bash
-[  199.141797][ T7937] VMA: 0x555dcf94a000 - 0x555dcf953000, flags=0x8100073, anon=0, file=bash
-[  199.142195][ T7937] VMA: 0x555dcf953000 - 0x555dcf95d000, flags=0x8100073, anon=1, file=(null)
-[  199.162442][ T7937] VMA: 0x555dd09f9000 - 0x555dd0a82000, flags=0x8100073, anon=1, file=(null)
-[  199.162927][ T7937] VMA: 0x7f8e1a803000 - 0x7f8e1a806000, flags=0x8000071, anon=0, file=libnss_files-2.31.o
-[  199.163421][ T7937] VMA: 0x7f8e1a806000 - 0x7f8e1a80d000, flags=0x8000075, anon=0, file=libnss_files-2.31.o
-[  199.163913][ T7937] VMA: 0x7f8e1a80d000 - 0x7f8e1a80f000, flags=0x8000071, anon=0, file=libnss_files-2.31.o
-[  199.164407][ T7937] VMA: 0x7f8e1a80f000 - 0x7f8e1a810000, flags=0x8100071, anon=0, file=libnss_files-2.31.o
-[  199.164900][ T7937] VMA: 0x7f8e1a810000 - 0x7f8e1a811000, flags=0x8100073, anon=0, file=libnss_files-2.31.o
-[  199.165397][ T7937] VMA: 0x7f8e1a811000 - 0x7f8e1a817000, flags=0x8100073, anon=1, file=(null)
-[  199.165832][ T7937] VMA: 0x7f8e1a81d000 - 0x7f8e1a84f000, flags=0x8000071, anon=0, file=LC_CTYPE
-[  199.166273][ T7937] VMA: 0x7f8e1a84f000 - 0x7f8e1a850000, flags=0x8000071, anon=0, file=LC_NUMERIC
-[  199.166722][ T7937] VMA: 0x7f8e1a850000 - 0x7f8e1a851000, flags=0x8000071, anon=0, file=LC_TIME
-[  199.167161][ T7937] VMA: 0x7f8e1a851000 - 0x7f8e1a9c4000, flags=0x8000071, anon=0, file=LC_COLLATE
-[  199.167610][ T7937] VMA: 0x7f8e1a9c4000 - 0x7f8e1a9c5000, flags=0x8000071, anon=0, file=LC_MONETARY
-[  199.168065][ T7937] VMA: 0x7f8e1a9c5000 - 0x7f8e1a9cc000, flags=0x80000d1, anon=0, file=gconv-modules.cache
-[  199.168551][ T7937] VMA: 0x7f8e1a9cc000 - 0x7f8e1a9cf000, flags=0x8100073, anon=1, file=(null)
-[  199.168983][ T7937] VMA: 0x7f8e1a9cf000 - 0x7f8e1a9f1000, flags=0x8000071, anon=0, file=libc-2.31.so
-[  199.169442][ T7937] VMA: 0x7f8e1a9f1000 - 0x7f8e1ab69000, flags=0x8000075, anon=0, file=libc-2.31.so
-[  199.169898][ T7937] VMA: 0x7f8e1ab69000 - 0x7f8e1abb7000, flags=0x8000071, anon=0, file=libc-2.31.so
-[  199.170356][ T7937] VMA: 0x7f8e1abb7000 - 0x7f8e1abbb000, flags=0x8100071, anon=0, file=libc-2.31.so
-[  199.170812][ T7937] VMA: 0x7f8e1abbb000 - 0x7f8e1abbd000, flags=0x8100073, anon=0, file=libc-2.31.so
-[  199.171273][ T7937] VMA: 0x7f8e1abbd000 - 0x7f8e1abc1000, flags=0x8100073, anon=1, file=(null)
-[  199.171706][ T7937] VMA: 0x7f8e1abc1000 - 0x7f8e1abc2000, flags=0x8000071, anon=0, file=libdl-2.31.so
-[  199.172169][ T7937] VMA: 0x7f8e1abc2000 - 0x7f8e1abc4000, flags=0x8000075, anon=0, file=libdl-2.31.so
-[  199.192446][ T7937] VMA: 0x7f8e1abc4000 - 0x7f8e1abc5000, flags=0x8000071, anon=0, file=libdl-2.31.so
-[  199.192951][ T7937] VMA: 0x7f8e1abc5000 - 0x7f8e1abc6000, flags=0x8100071, anon=0, file=libdl-2.31.so
-[  199.193413][ T7937] VMA: 0x7f8e1abc6000 - 0x7f8e1abc7000, flags=0x8100073, anon=0, file=libdl-2.31.so
-[  199.193880][ T7937] VMA: 0x7f8e1abc7000 - 0x7f8e1abd5000, flags=0x8000071, anon=0, file=libtinfo.so.6.2
-[  199.194352][ T7937] VMA: 0x7f8e1abd5000 - 0x7f8e1abe4000, flags=0x8000075, anon=0, file=libtinfo.so.6.2
-[  199.194821][ T7937] VMA: 0x7f8e1abe4000 - 0x7f8e1abf2000, flags=0x8000071, anon=0, file=libtinfo.so.6.2
-[  199.195291][ T7937] VMA: 0x7f8e1abf2000 - 0x7f8e1abf6000, flags=0x8100071, anon=0, file=libtinfo.so.6.2
-[  199.195760][ T7937] VMA: 0x7f8e1abf6000 - 0x7f8e1abf7000, flags=0x8100073, anon=0, file=libtinfo.so.6.2
-[  199.196230][ T7937] VMA: 0x7f8e1abf7000 - 0x7f8e1abf9000, flags=0x8100073, anon=1, file=(null)
-[  199.196662][ T7937] VMA: 0x7f8e1abf9000 - 0x7f8e1abfa000, flags=0x8000071, anon=0, file=SYS_LC_MESSAGES
-[  199.197135][ T7937] VMA: 0x7f8e1abfa000 - 0x7f8e1abfb000, flags=0x8000071, anon=0, file=LC_PAPER
-[  199.197576][ T7937] VMA: 0x7f8e1abfb000 - 0x7f8e1abfc000, flags=0x8000071, anon=0, file=LC_NAME
-[  199.198012][ T7937] VMA: 0x7f8e1abfc000 - 0x7f8e1abfd000, flags=0x8000071, anon=0, file=LC_ADDRESS
-[  199.198463][ T7937] VMA: 0x7f8e1abfd000 - 0x7f8e1abfe000, flags=0x8000071, anon=0, file=LC_TELEPHONE
-[  199.198920][ T7937] VMA: 0x7f8e1abfe000 - 0x7f8e1abff000, flags=0x8000071, anon=0, file=LC_MEASUREMENT
-[  199.199387][ T7937] VMA: 0x7f8e1abff000 - 0x7f8e1ac00000, flags=0x8000071, anon=0, file=ld-2.31.so
-[  199.199836][ T7937] VMA: 0x7f8e1ac00000 - 0x7f8e1ac23000, flags=0x8000075, anon=0, file=ld-2.31.so
-[  199.200286][ T7937] VMA: 0x7f8e1ac23000 - 0x7f8e1ac2b000, flags=0x8000071, anon=0, file=ld-2.31.so
-[  199.200734][ T7937] VMA: 0x7f8e1ac2b000 - 0x7f8e1ac2c000, flags=0x8000071, anon=0, file=LC_IDENTIFICATION
-[  199.201214][ T7937] VMA: 0x7f8e1ac2c000 - 0x7f8e1ac2d000, flags=0x8100071, anon=0, file=ld-2.31.so
-[  199.201663][ T7937] VMA: 0x7f8e1ac2d000 - 0x7f8e1ac2e000, flags=0x8100073, anon=0, file=ld-2.31.so
-[  199.202112][ T7937] VMA: 0x7f8e1ac2e000 - 0x7f8e1ac2f000, flags=0x8100073, anon=1, file=(null)
-[  199.222437][ T7937] VMA: 0x7fff6c5a0000 - 0x7fff6c5c1000, flags=0x100173, anon=1, file=(null)
-[  199.222913][ T7937] VMA: 0x7fff6c5fa000 - 0x7fff6c5fe000, flags=0xc044411, anon=0, file=(null)
-[  199.223344][ T7937] VMA: 0x7fff6c5fe000 - 0x7fff6c600000, flags=0x8040075, anon=0, file=(null)
-[  199.223771][ T7937] [memory_status] ===== Page Table Walk (partial) =====
+实验要求
+根据export导出符号__pte_offset_map。
+根据mem_stat.c中的TODO完善代码，并按照如上流程执行后可以得到：
+user@kernel:/tmp/share/RUC-OS_Kernel_Experiment-2026/MemoryStatus$ make load PID=226
+sudo insmod mem_stat.ko pid=226
+[  104.183262] mem_stat: loading out-of-tree module taints kernel.
+[  104.208453] [memory_status] ===== Page Frame Traversal =====
+[  104.218399] [memory_status] ===== Page Type Summary =====
+[  104.218612] [memory_status] total_pfn         = 786399
+[  104.218727] [memory_status] valid_pfn         = 786399
+[  104.218835] [memory_status] free_pages        = 737254
+[  104.218948] [memory_status] anon_pages        = 2505
+[  104.219166] [memory_status] file_pages        = 34097
+[  104.219284] [memory_status] slab_pages        = 16470
+[  104.219471] [memory_status] dirty_pages       = 2128
+[  104.219600] [memory_status] writeback_pages   = 0
+[  104.219711] [memory_status] lru_pages         = 19655
+[  104.219821] [memory_status] PAGE_SIZE         = 4096 bytes
+[  104.220076] [memory_status] ===== Target process: bash (pid=226) =====
+[  104.220226] [memory_status] ===== Traverse VMA =====
+[  104.220394] VMA: 0x4b9000 - 0x4d8000, flags=0x71, anon=0, file=bash
+[  104.220536] VMA: 0x4d8000 - 0x596000, flags=0x75, anon=0, file=bash
+[  104.220680] VMA: 0x596000 - 0x5f1000, flags=0x71, anon=0, file=bash
+[  104.220804] VMA: 0x5f1000 - 0x5f3000, flags=0x100071, anon=0, file=bash
+[  104.221013] VMA: 0x5f3000 - 0x5f8000, flags=0x100073, anon=0, file=bash
+[  104.221169] VMA: 0x5f8000 - 0x601000, flags=0x100073, anon=1, file=(null)
+[  104.221302] VMA: 0x1347000 - 0x138f000, flags=0x100073, anon=1, file=(null)
+[  104.221541] VMA: 0xb7be0000 - 0xb7be2000, flags=0x71, anon=0, file=libnss_files-2.28.so
+[  104.221754] VMA: 0xb7be2000 - 0xb7be9000, flags=0x75, anon=0, file=libnss_files-2.28.so
+[  104.222087] VMA: 0xb7be9000 - 0xb7bec000, flags=0x71, anon=0, file=libnss_files-2.28.so
+[  104.222257] VMA: 0xb7bec000 - 0xb7bed000, flags=0x70, anon=0, file=libnss_files-2.28.so
+[  104.222576] VMA: 0xb7bed000 - 0xb7bee000, flags=0x100071, anon=0, file=libnss_files-2.28.so
+[  104.222748] VMA: 0xb7bee000 - 0xb7bef000, flags=0x100073, anon=0, file=libnss_files-2.28.so
+[  104.223167] VMA: 0xb7bef000 - 0xb7bf5000, flags=0x100073, anon=1, file=(null)
+[  104.223319] VMA: 0xb7bfa000 - 0xb7c2c000, flags=0x71, anon=0, file=LC_CTYPE
+[  104.223456] VMA: 0xb7c2c000 - 0xb7c2d000, flags=0x71, anon=0, file=LC_NUMERIC
+[  104.223596] VMA: 0xb7c2d000 - 0xb7c2e000, flags=0x71, anon=0, file=LC_TIME
+[  104.223734] VMA: 0xb7c2e000 - 0xb7da1000, flags=0x71, anon=0, file=LC_COLLATE
+[  104.223882] VMA: 0xb7da1000 - 0xb7da2000, flags=0x71, anon=0, file=LC_MONETARY
+[  104.224033] VMA: 0xb7da2000 - 0xb7da3000, flags=0x71, anon=0, file=SYS_LC_MESSAGES
+[  104.224320] VMA: 0xb7da3000 - 0xb7daa000, flags=0xd1, anon=0, file=gconv-modules.cache
+[  104.224497] VMA: 0xb7daa000 - 0xb7dac000, flags=0x100073, anon=1, file=(null)
+[  104.224666] VMA: 0xb7dac000 - 0xb7dc5000, flags=0x71, anon=0, file=libc-2.28.so
+[  104.224814] VMA: 0xb7dc5000 - 0xb7f13000, flags=0x75, anon=0, file=libc-2.28.so
+[  104.224955] VMA: 0xb7f13000 - 0xb7f83000, flags=0x71, anon=0, file=libc-2.28.so
+[  104.225100] VMA: 0xb7f83000 - 0xb7f84000, flags=0x70, anon=0, file=libc-2.28.so
+[  104.225246] VMA: 0xb7f84000 - 0xb7f86000, flags=0x100071, anon=0, file=libc-2.28.so
+[  104.225401] VMA: 0xb7f86000 - 0xb7f87000, flags=0x100073, anon=0, file=libc-2.28.so
+[  104.225557] VMA: 0xb7f87000 - 0xb7f8a000, flags=0x100073, anon=1, file=(null)
+[  104.225698] VMA: 0xb7f8a000 - 0xb7f8b000, flags=0x71, anon=0, file=libdl-2.28.so
+[  104.226069] VMA: 0xb7f8b000 - 0xb7f8d000, flags=0x75, anon=0, file=libdl-2.28.so
+[  104.226229] VMA: 0xb7f8d000 - 0xb7f8e000, flags=0x71, anon=0, file=libdl-2.28.so
+[  104.226375] VMA: 0xb7f8e000 - 0xb7f8f000, flags=0x100071, anon=0, file=libdl-2.28.so
+[  104.226528] VMA: 0xb7f8f000 - 0xb7f90000, flags=0x100073, anon=0, file=libdl-2.28.so
+[  104.226712] VMA: 0xb7f90000 - 0xb7f97000, flags=0x71, anon=0, file=libtinfo.so.6.1
+[  104.227126] VMA: 0xb7f97000 - 0xb7fa6000, flags=0x75, anon=0, file=libtinfo.so.6.1
+[  104.227280] VMA: 0xb7fa6000 - 0xb7fb5000, flags=0x71, anon=0, file=libtinfo.so.6.1
+[  104.227421] VMA: 0xb7fb5000 - 0xb7fb6000, flags=0x70, anon=0, file=libtinfo.so.6.1
+[  104.227562] VMA: 0xb7fb6000 - 0xb7fb8000, flags=0x100071, anon=0, file=libtinfo.so.6.1
+[  104.227710] VMA: 0xb7fb8000 - 0xb7fb9000, flags=0x100073, anon=0, file=libtinfo.so.6.1
+[  104.227863] VMA: 0xb7fb9000 - 0xb7fba000, flags=0x71, anon=0, file=LC_PAPER
+[  104.228125] VMA: 0xb7fba000 - 0xb7fbb000, flags=0x71, anon=0, file=LC_NAME
+[  104.228299] VMA: 0xb7fbb000 - 0xb7fbc000, flags=0x71, anon=0, file=LC_ADDRESS
+[  104.228448] VMA: 0xb7fbc000 - 0xb7fbd000, flags=0x71, anon=0, file=LC_TELEPHONE
+[  104.228592] VMA: 0xb7fbd000 - 0xb7fbe000, flags=0x71, anon=0, file=LC_MEASUREMENT
+[  104.228754] VMA: 0xb7fbe000 - 0xb7fc0000, flags=0x100073, anon=1, file=(null)
+[  104.228894] VMA: 0xb7fc0000 - 0xb7fc4000, flags=0x4044411, anon=0, file=(null)
+[  104.229295] VMA: 0xb7fc4000 - 0xb7fc6000, flags=0x40075, anon=0, file=(null)
+[  104.229444] VMA: 0xb7fc6000 - 0xb7fc7000, flags=0x71, anon=0, file=ld-2.28.so
+[  104.229580] VMA: 0xb7fc7000 - 0xb7fe3000, flags=0x75, anon=0, file=ld-2.28.so
+[  104.229712] VMA: 0xb7fe3000 - 0xb7fed000, flags=0x71, anon=0, file=ld-2.28.so
+[  104.229845] VMA: 0xb7fed000 - 0xb7fee000, flags=0x71, anon=0, file=LC_IDENTIFICATION
+[  104.229988] VMA: 0xb7fee000 - 0xb7fef000, flags=0x100071, anon=0, file=ld-2.28.so
+[  104.230127] VMA: 0xb7fef000 - 0xb7ff0000, flags=0x100073, anon=0, file=ld-2.28.so
+[  104.230263] VMA: 0xbfdac000 - 0xbfdcd000, flags=0x100173, anon=1, file=(null)
+[  104.230444] [memory_status] ===== Page Table Walk (partial) =====
+[  104.230646] VA 0x4d8000 -> PFN 0xbe934 (PA 0xbe934000)
+[  104.230759] VA 0x4d9000 -> PFN 0xbc84b (PA 0xbc84b000)
+[  104.230887] VA 0x4da000 -> PFN 0xbc84c (PA 0xbc84c000)
 ...
-[  225.438494][ T7937] VA 0x555dcf85d000 -> PFN 0x0 (PA 0x0)
-[  225.438848][ T7937] VA 0x555dcf85e000 -> PFN 0x2296d (PA 0x2296d000)
-[  225.439261][ T7937] VA 0x555dcf85f000 -> PFN 0x2296e (PA 0x2296e000)
-[  225.439674][ T7937] VA 0x555dcf860000 -> PFN 0x2296f (PA 0x2296f000)
-[  225.440089][ T7937] VA 0x555dcf861000 -> PFN 0x22970 (PA 0x22970000)
-[  225.440502][ T7937] VA 0x555dcf862000 -> PFN 0x22971 (PA 0x22971000)
-[  225.440916][ T7937] VA 0x555dcf863000 -> PFN 0x22972 (PA 0x22972000)
-[  225.461142][ T7937] VA 0x555dcf864000 -> PFN 0x22973 (PA 0x22973000)
-[  225.461584][ T7937] VA 0x555dcf865000 -> PFN 0x22974 (PA 0x22974000)
-[  225.462000][ T7937] VA 0x555dcf866000 -> PFN 0x22975 (PA 0x22975000)
-[  238.653332][ T7937] [memory_status] Mapped pages: 471
-```
+[  104.601506] VA 0xbfdca000 -> PFN 0xbd853 (PA 0xbd853000)
+[  104.602852] VA 0xbfdcb000 -> PFN 0xbd118 (PA 0xbd118000)
+[  104.605752] VA 0xbfdcc000 -> PFN 0xbb40b (PA 0xbb40b000)
+[  104.615217] [memory_status] Mapped pages: 399
+参考材料
+https://tldp.org/LDP/tlk/mm/memory.html

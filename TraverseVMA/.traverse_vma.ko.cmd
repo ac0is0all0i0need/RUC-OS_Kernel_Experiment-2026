@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/TraverseVMA/traverse_vma.ko := ld -r -m elf_i386 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/user/Kernel/share/os_kernal/TraverseVMA/traverse_vma.ko /home/user/Kernel/share/os_kernal/TraverseVMA/traverse_vma.o /home/user/Kernel/share/os_kernal/TraverseVMA/traverse_vma.mod.o;  true

@@ -7,7 +7,7 @@
 * 编译好内核模块后进入客户机，拷贝当前目录到客户机中。
 
 ```bash
-cp -r /tmp/share/practice_kern/TraverseVMA/ .
+cp -r /tmp/share/os_kernal/TraverseVMA/ .
 cd TraverseVMA
 ```
 

