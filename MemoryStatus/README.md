@@ -8,9 +8,14 @@ cd MemoryStatus
 make target && ./target &
 指定pid后运行内核模块：
 make load PID=<target pid>
-实验要求
-根据export导出符号__pte_offset_map。
-根据mem_stat.c中的TODO完善代码，并按照如上流程执行后可以得到：
+```
+
+## 实验要求
+
+* 根据[export](../export.md)导出符号[__pte_offset_map](https://elixir.bootlin.com/linux/v6.6/source/mm/pgtable-generic.c#L280)。
+* 根据[mem_stat.c](./mem_stat.c)中的TODO完善代码，并按照如上流程执行后可以得到：
+
+```bash
 user@kernel:/tmp/share/RUC-OS_Kernel_Experiment-2026/MemoryStatus$ make load PID=226
 sudo insmod mem_stat.ko pid=226
 [  104.183262] mem_stat: loading out-of-tree module taints kernel.
@@ -92,5 +97,8 @@ sudo insmod mem_stat.ko pid=226
 [  104.602852] VA 0xbfdcb000 -> PFN 0xbd118 (PA 0xbd118000)
 [  104.605752] VA 0xbfdcc000 -> PFN 0xbb40b (PA 0xbb40b000)
 [  104.615217] [memory_status] Mapped pages: 399
-参考材料
+```
+
+## 参考材料
+
 https://tldp.org/LDP/tlk/mm/memory.html
