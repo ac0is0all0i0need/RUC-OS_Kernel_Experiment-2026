@@ -4,7 +4,7 @@ obj-m += signal_blocker.o
 CURRENT_PATH := $(shell pwd)
 
 # 目标内核源码路径
-LINUX_KERNEL_PATH := /home/user/Kernel/v6.6/x86_64/
+LINUX_KERNEL_PATH := /home/user/Kernel/v6.0/i386/
 
 # 默认目标：同时构建内核模块
 all: signal_blocker.ko
