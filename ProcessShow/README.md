@@ -45,7 +45,7 @@ make
 * 启动qemu运行编译好的内核。
 
 ```bash
-./run v6.0 i386 buster
+./run.sh v6.0 i386 buster
 ```
 
 * 用户为user，无密码。

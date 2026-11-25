@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/MemoryStatus/mem_stat.ko := ld -r -m elf_i386 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/user/Kernel/share/os_kernal/MemoryStatus/mem_stat.ko /home/user/Kernel/share/os_kernal/MemoryStatus/mem_stat.o /home/user/Kernel/share/os_kernal/MemoryStatus/mem_stat.mod.o;  true

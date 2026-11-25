@@ -2,7 +2,7 @@ MemoryStatus
 添加一个内核模块，遍历page打印物理内存信息，指定进程后遍历并打印vma和页表信息。
 操作指南
 拷贝编译好的内核模块原目录到客户机中：
-cp -r /tmp/share/practice_kern/MemoryStatus/ .
+cp -r /tmp/share/os_kernal/MemoryStatus/ .
 cd MemoryStatus
 编译并运行target用户态程序（target pid会输出）：
 make target && ./target &

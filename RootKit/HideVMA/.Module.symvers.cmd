@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/RootKit/HideVMA/Module.symvers := sed 's/ko$$/o/' /home/user/Kernel/share/os_kernal/RootKit/HideVMA/modules.order | scripts/mod/modpost    -o /home/user/Kernel/share/os_kernal/RootKit/HideVMA/Module.symvers -e    -w -T -

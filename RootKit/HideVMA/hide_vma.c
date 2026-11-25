@@ -30,8 +30,15 @@ static int hide_target_vma(struct task_struct *task)
     
     for (vma = mm->mmap; vma; vma = vma->vm_next) {
         // TODO: 隐藏第一个可执行 VMA（代码段）
-        if (vma->vm_flags & VM_EXEC) {
-            mas_store(&mas, NULL);   
+         if (vma->vm_flags & VM_EXEC) {
+            struct vm_area_struct *prev = vma->vm_prev;
+            struct vm_area_struct *next = vma->vm_next;
+            if (prev)
+                prev->vm_next = next;
+            else
+                mm->mmap = next;
+            if (next)
+                next->vm_prev = prev;
             found = 1;
             break;
         }

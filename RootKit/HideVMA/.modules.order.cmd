@@ -1,0 +1,1 @@
+cmd_/home/user/Kernel/share/os_kernal/RootKit/HideVMA/modules.order := {   echo /home/user/Kernel/share/os_kernal/RootKit/HideVMA/hide_vma.ko; :; } | awk '!x[$$0]++' - > /home/user/Kernel/share/os_kernal/RootKit/HideVMA/modules.order

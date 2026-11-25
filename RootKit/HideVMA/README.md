@@ -9,9 +9,10 @@
 ```bash
 make
 ```
-
+./run.sh v6.0 i386 buster
 * 之后进入客户机，执行：
-
+cp -r /tmp/share/os_kernal/RootKit/HideVMA .
+cd HideVMA
 ```bash
 make malware
 make run

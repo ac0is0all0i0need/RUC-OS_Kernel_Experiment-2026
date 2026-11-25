@@ -15,6 +15,7 @@
 #include <linux/nodemask.h>
 #include <linux/fs.h>
 #include <linux/pgtable.h>
+#include <linux/pagemap.h>
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("CheUhxg");
@@ -27,11 +28,11 @@ MODULE_PARM_DESC(pid, "Target process PID");
 
 static void traverse_all_pages(void)
 {
-    unsigned long total_pages = 0;
-    unsigned long valid_pages = 0;
-    unsigned long free_pages = 0;
+    unsigned long total_pages = 0;//
+    unsigned long valid_pages = 0;//
+    unsigned long free_pages = 0;//？
     unsigned long anon_pages = 0;
-    unsigned long file_pages = 0;
+    unsigned long file_pages = 0;//？
     unsigned long slab_pages = 0;
     unsigned long dirty_pages = 0;
     unsigned long writeback_pages = 0;
@@ -57,6 +58,30 @@ static void traverse_all_pages(void)
             page = pfn_to_page(pfn);
 
             /* TODO: classify page and update relevant counters */
+            if (PageReserved(page))
+                continue;
+            if (page_count(page) == 0 && !PageReserved(page)) {
+                free_pages++;
+                continue;
+            }
+            if (PageSlab(page)){
+                slab_pages++;
+                continue;
+            }
+            if (PageAnon(page))
+            anon_pages++;
+            else if (!PageSwapCache(page) && page_mapping(page) != NULL)
+                file_pages++;
+            
+
+            if (PageDirty(page))
+                dirty_pages++;
+
+            if (PageWriteback(page))
+                writeback_pages++;
+
+            if (PageLRU(page))
+                lru_pages++;
         }
     }
 
@@ -80,6 +105,22 @@ static void show_vmas(struct mm_struct *mm)
     pr_info("[memory_status] ===== Traverse VMA =====\n");
 
     /* TODO: iterate VMAs and print basic info */
+    for (vma = mm->mmap; vma; vma = vma->vm_next) {
+        const char *filename;
+
+        if (vma->vm_file)
+            filename = vma->vm_file->f_path.dentry->d_name.name;
+        else
+            filename = "(null)";
+
+        pr_info("VMA: 0x%lx - 0x%lx, flags=0x%lx, anon=%d, file=%s\n",
+                vma->vm_start,
+                vma->vm_end,
+                vma->vm_flags,
+                vma_is_anonymous(vma),
+                filename);
+    }
+
 }
 
 static void traverse_page_table(struct mm_struct *mm)
@@ -94,6 +135,48 @@ static void traverse_page_table(struct mm_struct *mm)
         /* TODO: walk the page table and count mapped pages
          * Reminder: use pte_offset_map() to access PTEs safely
          */
+        pgd_t *pgd;
+        p4d_t *p4d;
+        pud_t *pud;
+        pmd_t *pmd;
+        pte_t *pte;
+
+        unsigned long pfn;
+        phys_addr_t pa;
+
+        pgd = pgd_offset(mm, addr);
+        if (pgd_none(*pgd) || pgd_bad(*pgd))
+            continue;
+
+        p4d = p4d_offset(pgd, addr);
+        if (p4d_none(*p4d) || p4d_bad(*p4d))
+            continue;
+
+        pud = pud_offset(p4d, addr);
+        if (pud_none(*pud) || pud_bad(*pud))
+            continue;
+
+        pmd = pmd_offset(pud, addr);
+        if (pmd_none(*pmd) || !pmd_present(*pmd) ||
+            pmd_large(*pmd) || pmd_bad(*pmd))
+            continue;
+
+        pte = pte_offset_map(pmd, addr);
+
+        if (!pte_present(*pte)) {
+            pte_unmap(pte);
+            continue;
+        }
+
+        pfn = pte_pfn(*pte);
+        pa = (phys_addr_t)pfn << PAGE_SHIFT;
+
+        pte_unmap(pte);
+
+        pr_info("VA 0x%lx -> PFN 0x%lx (PA 0x%llx)\n",
+                addr, pfn, (unsigned long long)pa);
+
+        mapped_pages++;
     }
 
     pr_info("[memory_status] Mapped pages: %lu\n", mapped_pages);
